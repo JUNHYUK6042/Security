@@ -10,5 +10,5 @@
 ![01](/KH_Security/Linux/Vi%20Editor/img/01.png)
 - 파일이 존재하지 않는 경우, vi는 새 파일을 생성
 
-![02](
+![02](/KH_Security/Linux/Vi%20Editor/img/02.png)
 - 하단에 `"a.txt" [New File]` 이 표시되며, 이는 새 파일이 생성되었음을 의미함
