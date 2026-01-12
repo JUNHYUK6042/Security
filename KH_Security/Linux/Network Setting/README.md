@@ -1,2 +1,2 @@
-## Network Setting - Part 1
+## Network Setting
 ---
