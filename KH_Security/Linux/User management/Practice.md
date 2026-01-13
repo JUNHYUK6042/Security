@@ -6,14 +6,6 @@
 
 ## /etc/passwd 사용자 등록 정보
 
-- 사용자의 기본 등록 정보가 저장되고agement & Group Management
-
-- 사용자(User)와 그룹(Group)을 적절히 생성하고 권한 및 암호 정책을 관리하는 과정
-
----
-
-## /etc/passwd 사용자 등록 정보
-
 - 사용자의 기본 등록 정보가 저장되고, useradd 명령을 이용하여 등록합니다.
 - cat /etc/passwd 명령어를 통해 시스템에 등록된 정보를 확인할 수 있습니다.
 
