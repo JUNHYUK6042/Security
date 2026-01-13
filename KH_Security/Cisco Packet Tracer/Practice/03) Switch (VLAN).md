@@ -90,3 +90,31 @@
 ![26](/KH_Security/Cisco%20Packet%20Tracer/img/26.png)
 
 ---
+
+## VLAN - Trunk 실습 
+
+- Switch 간 Gig0/1 포트를 Trunk로 정의하여 모든 VLAN 패킷을 전달하는 실습을 하였습니다.
+
+![29](/KH_Security/Cisco%20Packet%20Tracer/img/29.png)
+
+- 각각의 스위치에 VLAN 생성하고 인터페이스 할당할 때 Trunk로 설정한 과정입니다.
+![27](/KH_Security/Cisco%20Packet%20Tracer/img/27.png)
+![28](/KH_Security/Cisco%20Packet%20Tracer/img/28.png)
+
+---
+
+## 같은 VLAN에 있는 PC간 통신 테스트
+
+- VLAN 1 PC에서의 통신
+
+![30](/KH_Security/Cisco%20Packet%20Tracer/img/30.png)
+
+- VLAN 10 PC에서의 통신
+
+![31](/KH_Security/Cisco%20Packet%20Tracer/img/31.png)
+
+- VLAN 10 PC에서의 통신
+
+![32](/KH_Security/Cisco%20Packet%20Tracer/img/32.png)
+
+---
