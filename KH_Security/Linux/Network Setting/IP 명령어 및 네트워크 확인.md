@@ -148,4 +148,19 @@
   - GATEWAY
   - DNS
 
+---
 
+## DNS 설정 파일
+
+- `/etc/resolv.conf`
+- - NetworkManager에 의해 시스템 재부팅 시 인터페이스 설정 파일에 따라 재구성됩니다.
+- DNS 서버 테스트시 임시 설정은 이 파일을 사용합니다.
+- 해당 파일 수정 시 Local DNS 설정이 변경됩니다.
+
+---
+
+## /etc/sysconfig/network 파일
+
+- `NOZEROCONF=yse`
+-  Zero Configuration Networking을 위하여 예약된 subnet 설정을 제거한다
+-  반드시 필요한 옵션은 아니다.
