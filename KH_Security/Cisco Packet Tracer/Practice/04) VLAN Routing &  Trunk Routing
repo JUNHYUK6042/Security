@@ -1,7 +1,0 @@
-# VLAN Routing &  Trunk Routing 실습
-
----
-
-## VLAN Routing 실습
-
-- IP 1.1.1.3을 VLAN10, IP 1.1.1.5를 VLAN 20으로 네트워크를 분리합니다.
