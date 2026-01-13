@@ -98,7 +98,13 @@
 ![29](/KH_Security/Cisco%20Packet%20Tracer/img/29.png)
 
 - 각각의 스위치에 VLAN 생성하고 인터페이스 할당할 때 Trunk로 설정한 과정입니다.
+
+- Switch 0
+
 ![27](/KH_Security/Cisco%20Packet%20Tracer/img/27.png)
+
+- Switch 1
+
 ![28](/KH_Security/Cisco%20Packet%20Tracer/img/28.png)
 
 ---
