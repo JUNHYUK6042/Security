@@ -4,4 +4,8 @@
 
 ### 목차
 
-`1. 
+01) Packet Tracer & CLI 모드 & IP 할당
+02) Switch (STP)
+03) Switch (VLAN)
+04) VLAN Routing & Trunk Routing
+05) Router (Static, RIP)
