@@ -101,8 +101,8 @@
 
 ## VLAN 10 & VLAN 20 Sub-Interface 설정 및 인터페이스 확인
 
-- GigabitEthernet 0/0.10 서브인터페이스를 생성합니다.
-- encapsulation dot1q 10은 "들어오고 나가는 패킷에 IEEE 802.1q 규칙을 써서 VLAN ID = 10이라고 구분하겠다"라는 의미입니다.
+- GigabitEthernet 0/0.10, GiGigabitEthernet 0/0.20 서브인터페이스를 생성합니다.
+- encapsulation dot1q 10,20은 "들어오고 나가는 패킷에 IEEE 802.1q 규칙을 써서 VLAN ID = 10, VLAN ID = 20 이라고 구분하겠다"라는 의미입니다.
 
 - VLAN 10 Sub-Interface 설정
 
