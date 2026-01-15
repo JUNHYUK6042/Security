@@ -36,11 +36,11 @@
 - VMware 화면에서 설정 버튼 누르고 Network Adapter(NAT방식)을 추가합니다.
 - 설정 완료 후 VMware 화면에서 Network Adapter 2가 추가된 것을 확인할 수 있습니다.
 
-![01](/KH_Security/Linux/Network%20Setting/img/01.png)
+![01](/KH_Security/Linux/Network%20Setting%20-%201/img/01.png)
 
 - Rocky Linux 부팅 후 현재 활동 -> 프로그램 표시 -> 설정 -> 네트워크 메뉴로 이동합니다.
 
-![02](/KH_Security/Linux/Network%20Setting/img/02.png)
+![02](/KH_Security/Linux/Network%20Setting%20-%201/img/02.png)
 
 ---
 
@@ -56,11 +56,11 @@
 
 - NIC 신원 설정
 
-![03](/KH_Security/Linux/Network%20Setting/img/03.png)
+![03](/KH_Security/Linux/Network%20Setting%20-%201/img/03.png)
 
 - NIC IPv4 설정
 
-![04](/KH_Security/Linux/Network%20Setting/img/04.png)
+![04](/KH_Security/Linux/Network%20Setting%20-%201/img/04.png)
 
 - IP 수동 설정
 - IPv4 : 192.168.11.###
@@ -72,15 +72,15 @@
 
 - nmtui 명령어 입력하면 다음과 같이 화면이 나옵니다.
 
-![05](/KH_Security/Linux/Network%20Setting/img/05.png)
+![05](/KH_Security/Linux/Network%20Setting%20-%201/img/05.png)
 
 - 연결 편집으로 들어갑니다.
 
-![06](/KH_Security/Linux/Network%20Setting/img/06.png)
+![06](/KH_Security/Linux/Network%20Setting%20-%201/img/06.png)
 
 - 추가 -> 이더넷 -> 생성을 순서대로 눌러주면 다음과 같이 화면이 나옵니다.
 
-![07](/KH_Security/Linux/Network%20Setting/img/07.png)
+![07](/KH_Security/Linux/Network%20Setting%20-%201/img/07.png)
 
 - IPv4에서 자동 -> 수동
 - 숨기기 -> 보이기
@@ -88,7 +88,7 @@
 
 - 설정 완료 시 확인 버튼을 눌러줍니다.
 
-![08](/KH_Security/Linux/Network%20Setting/img/08.png)
+![08](/KH_Security/Linux/Network%20Setting%20-%201/img/08.png)
 
 ---
 
@@ -96,7 +96,7 @@
 
 - `ip a` 명령어를 통해 잘 추가가 되었는지 확인해 줍니다.
 
-![09](/KH_Security/Linux/Network%20Setting/img/09.png)
+![09](/KH_Security/Linux/Network%20Setting%20-%201/img/09.png)
 
 ---
 
