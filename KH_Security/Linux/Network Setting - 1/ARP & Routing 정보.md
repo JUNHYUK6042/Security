@@ -1,4 +1,4 @@
-<img width="596" height="290" alt="image" src="https://github.com/user-attachments/assets/0fc67d44-5318-462c-907e-2a556b4804dd" /># Routing 정보 추가 & ARP
+# Routing 정보 추가 & ARP
 
 ---
 
