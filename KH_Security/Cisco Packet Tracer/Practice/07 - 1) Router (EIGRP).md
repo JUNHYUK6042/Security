@@ -120,3 +120,137 @@ A-B-C-D -> 45,714 + 768,000 = 813,714
 A-X-Y-Z-D -> 10,000 + 1,024,000 = 1,034,000
 ```
 ---
+
+## EIGRP 실습
+
+### EIGRP 설정 예시
+
+- EIGRP 설정
+
+```
+router eigrp [AS#]
+network [네트워크 주소] [와일드 마스크]
+```
+
+---
+
+## EIGRP 구성도
+
+![02](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/03.png)
+
+---
+
+## R1 Setting
+
+```
+enable
+conf t
+hostname R1
+no ip domain-lookup
+
+int g0/0
+ip add 1.1.1.1 255.255.255.0
+no sh
+int s0/0/0
+ip add 12.1.1.1 255.255.255.0
+no sh
+int s0/0/1
+ip add 31.1.1.1 255.255.255.0
+no sh
+
+router eigrp 100
+no auto-summary
+passive-interface GigabitEthernet0/0
+network 1.1.1.1 0.0.0.0
+network 12.1.1.1 0.0.0.0
+network 31.1.1.1 0.0.0.0
+
+end
+copy run start
+```
+
+---
+
+## R2 Setting
+
+```
+enable
+conf t
+hostname R2
+no ip domain-lookup
+
+int g0/0
+ip add 2.2.2.1 255.255.255.0
+no sh
+int s0/0/0
+ip add 23.1.1.2 255.255.255.0
+no sh
+int s0/0/1
+ip add 12.1.1.2 255.255.255.0
+no sh
+
+router eigrp 100
+no auto-summary
+passive-interface GigabitEthernet0/0
+network 2.2.2.1 0.0.0.0
+network 12.1.1.2 0.0.0.0
+network 23.1.1.2 0.0.0.0
+
+end
+copy run start
+```
+
+---
+
+## R2 Setting
+
+```
+enable
+conf t
+hostname R3
+no ip domain-lookup
+
+int g0/0
+ip add 3.3.3.1 255.255.255.0
+no sh
+int s0/0/0
+ip add 31.1.1.1 255.255.255.0
+no sh
+int s0/0/1
+ip add 23.1.1.3 255.255.255.0
+no sh
+
+router eigrp 100
+no auto-summary
+passive-interface GigabitEthernet0/0
+network 3.3.3.1 0.0.0.0
+network 23.1.1.3 0.0.0.0
+network 31.1.1.3 0.0.0.0
+
+end
+copy run start
+```
+
+---
+
+## EIGRP 확인 - Neighbor Table & Topology Table
+
+- R1 Neighbor Table & Topology Table  
+Neighbor Table 보면 k1 과 k3 상수가 1인걸 볼 수 있습니다.
+
+![03](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/04.png)  
+![04](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/05.png)
+
+
+- R2 Neighbor Table & Topology Table
+
+![05](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/06.png)  
+![06](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/07.png)  
+
+
+- R3 Neighbor Table & Topology Table
+
+![07](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/08.png)  
+![08](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20EIGRP/09.png)
+
+---
