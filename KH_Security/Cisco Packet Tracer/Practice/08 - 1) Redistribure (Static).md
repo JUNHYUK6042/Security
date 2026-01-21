@@ -1,8 +1,6 @@
 # Cisco Router Redistribution
 
-## 1. Redistribution - RIP
-
-### 개요
+## 개요
 - RIP는 **STATIC / OSPF / EIGRP** 로부터 라우팅 정보를 Redistribution 받을 수 있다.
 - RIP는 metric으로 **Hop Count** 를 사용하며, 최대 값은 **15** 이다.
 - metric 값이 **16 이상이면 RIP는 해당 경로를 무시**한다.
