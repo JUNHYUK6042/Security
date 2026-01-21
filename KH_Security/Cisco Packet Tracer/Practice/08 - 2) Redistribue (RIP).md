@@ -208,7 +208,7 @@ default-information originate
 router eigrp 100
 no auto-summary
 network 23.1.1.3 0.0.0.0
-network 23.1.1.3 0.0.0.0
+network 34.1.1.0 0.0.0.0
 
 - Redistribute Setting -
 redistribute static
