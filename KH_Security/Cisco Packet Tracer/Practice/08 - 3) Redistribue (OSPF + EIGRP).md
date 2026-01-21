@@ -83,7 +83,7 @@ redistribute ospf 1 metric 10000 1000 255 1 1500
 
 ### OSPF + EIGRP 구성도
 
-![26]()
+![26](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20Redistribute/26.png)
 
 ---
 
@@ -156,5 +156,23 @@ no aute-summary
 network 5.5.5.1 0.0.0.0
 network 45.1.1.5 0.0.0.0
 ```
+
+---
+
+### PC에서의 통신 테스트
+
+- 위에 `RIP + OSPF`와 같이 통신이 잘 되는 것을 알 수 있습니다.
+
+- PC1(1.1.1.11)  
+![27](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20Redistribute/27.png)
+
+- PC2(2.2.2.11)  
+![28](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20Redistribute/28.png)
+
+- PC3(4.4.4.11)  
+![29](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20Redistribute/29.png)
+
+- PC4(5.5.5.11)  
+![30](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20Redistribute/30.png)
 
 ---
