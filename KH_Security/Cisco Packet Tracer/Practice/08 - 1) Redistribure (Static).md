@@ -98,9 +98,9 @@ Metric 입력 순서 : K1 K3 K4 K2 K5
 ### Command Format
 
 ```bash
-redistribute static subnets
-redistribute rip subnets
-redistribute eigrp <AS> metric <값> subnets
+redistribute static
+redistribute rip metric <Bandwidth> <Delay> <Reliability> <Load> <MTU>
+redistribute ospf <Process-ID> metric <Bandwidth> <Delay> <Reliability> <Load> <MTU>
 ```
 
 ### Ex
