@@ -68,9 +68,9 @@
 **예시**
 
 ```
-00 0-23 * * * rdate -s time.bora.net- 매시간마다 실행
-0-59/10 * * * * chown -R data.st /home/data- 0에서 59분까지 10분마다 실행
-0-59/10 * * * * chmod -R 775 /home/data
+00 0-23 * * * rdate -s time.bora.net   # 매시간 실행
+0-59/10 * * * * chown -R data.st /home/data   # 10분마다 실행
+0-59/10 * * * * chmod -R 775 /home/data       # 10분마다 실행
 ```
 
 #### 기본 스케줄 등록 파일
@@ -118,15 +118,17 @@ cat /var/log/cron
 
 ## RSYNC 실습
 
-- `rsync` 설치 확인
+### Rsync Server 설정
 
-![01]()
+- `rsync` 설치 확인  
+
+![01](/KH_Security/Linux/CRON%20%26%20RSYNC/img/01.png)
 
 - `rsync-daemon.noarch` 파일이 설치되어있지 않으므로  
 `dnf install -y rsync-daemon.noarch` 명령어로 설치 해줍줍니다.
 
-![02]()  
-![03]()
+![02](/KH_Security/Linux/CRON%20%26%20RSYNC/img/02.png)    
+![03](/KH_Security/Linux/CRON%20%26%20RSYNC/img/03.png)
 
 - 설치가 되어있는 것을 확인할 수 있습니다.
 
@@ -166,9 +168,64 @@ systemctl [start | stop | restart | status]  rsyncd.service
 
 ---
 
-### /etc/rsyncd.conf 파일 설정 실습
+### Rsync Server : /etc/rsyncd.conf 파일 설정 실습
 
 - 먼저 서버에 `backup` 디렉터리를 생성한 뒤 `a.txt`와 `b.txt`를 만들어줍니다.
 그런 다음에 Rsync 데몬 설정 파일을 설정 해줍니다.
+  
+![04](/KH_Security/Linux/CRON%20%26%20RSYNC/img/04.png)
 
-![04]()
+---
+
+## Rsync 클라이언트 명령 및 옵션
+
+### 명령 구조
+
+| 동기화 유형 | 명령 예시 | 설명 |
+|-------------|-----------|------|
+| 로컬 간 동기화 | `rsync -avuz [--delete] source destination` | 로컬 시스템 내 디렉토리 동기화 |
+| 서버 → 클라이언트 | `rsync -avuz [--delete] IP::[서비스명] [백업 디렉토리]` | 서버의 리소스를 클라이언트로 백업 |
+| 클라이언트 → 서버 | `rsync -avuz [--delete] [백업 디렉토리] IP::[서비스명]` | 클라이언트의 데이터를 서버로 전송 |
+
+---
+
+### 주요 옵션
+
+| 옵션 | 설명 |
+|------|------|
+| `-v` | 작업 내역 출력 |
+| `-a` | archive 모드: 심볼릭 링크, 권한 등 모든 내용 보존 |
+| `-z` | 파일 압축 전송 |
+| `-u` | 최신 파일은 복사하지 않음 |
+| `--delete` | source에서 삭제된 파일을 destination에서도 삭제 (완전 동기화) |
+
+---
+
+### 로컬 동기화 예시
+
+| 명령 | 설명 |
+|------|------|
+| `rsync -avz /home/httpd/ /backup/httpd/` | `/home/httpd/` 디렉토리 내용을 `/backup/httpd/`로 동기화 |
+
+---
+
+## RSYNC Client : 동기화
+
+### Cron 과 Rsync를 이용한 자동 백업
+
+```
+crontab -e 명령어를 이용
+[분] [시] [일] [월] [요일] rsync -avuz 192.168.10.###::backup /backup
+```
+  
+![05](/KH_Security/Linux/CRON%20%26%20RSYNC/img/05.png)
+
+- rsync -avuz 192.168.10.31::backup /backup 명령어를 통해 서버의 backup 모듈과 로컬 /backup 디렉토리를 동기화합니다.  
+명령 성공 시 서버에서 만든 a.txt와 b.txt 파일이 그대로 로컬 /backup에 생성된 것을 확인할 수 있습니다.
+
+![06](/KH_Security/Linux/CRON%20%26%20RSYNC/img/06.png)
+
+- `crontab -l` 명령어를 통해 확인한 결과  
+지정한 시간에 자동으로 백업을 수행합니다.
+
+---
