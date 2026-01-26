@@ -74,7 +74,7 @@
 - `dnf install -y vsftpd`를 통해 설치해줍니다.
 - 다음과 같이 설치가 되어있는지 `systemctl status vsftpd.service` 명령어를 통해 상태 확인을 해줍니다.
 
-![01]()
+![01](/KH_Security/Linux/FTP%20Server/img/01.png)
 
 - `active (running)`가 되어 있으므로 활성화가 되었습니다.
 
@@ -137,7 +137,7 @@ mount --bind /data/share /home/test01/share
 - `/etc/vsftpd/vsftpd.conf` 파일에  
 다음과 같은 내용을 입력 후 저장해줍니다.
 
-![02]()
+![02](/KH_Security/Linux/FTP%20Server/img/02.png)
 
 - 설정 파일 변경 후 시스템 재부팅은 필요 없으며, 서비스 재시작만으로 적용됩니다.
   - `systemctl restart vsftpd.service`명령어를 통해 재부팅 합니다.
@@ -147,7 +147,7 @@ mount --bind /data/share /home/test01/share
 
 - `/etc/vsftpd/chroot_list` 파일에 계정을 적습니다.
 
-![03]()
+![03](/KH_Security/Linux/FTP%20Server/img/03.png)
 
 - chroot_list_enable = YES, chroot_local_user=NO
   - 이런 경우에는 파일안에 있는 계정들은 chroot가 적용
@@ -161,8 +161,8 @@ mount --bind /data/share /home/test01/share
 - `chroot_list_enable = YES, chroot_local_user=YES`
   - 다음과 같이 test1 계정은 chroot가 적용되지 않았습니다.
 
-![04]()  
-![05]() 
+![04](/KH_Security/Linux/FTP%20Server/img/04.png)    
+![05](/KH_Security/Linux/FTP%20Server/img/05.png) 
 
 ---
 
@@ -208,25 +208,26 @@ userlist_deny=YES
 
 - 다음과 같이 특정 사용자 접속만 허용하게 설정했습니다.
 
-![06]()
+![06](/KH_Security/Linux/FTP%20Server/img/06.png)
 
 - `/etc/vsftpd/user_list`를 통해 다음과 같이 test01를 입력 후 저장합니다.
 
-![07]()
+![07](/KH_Security/Linux/FTP%20Server/img/07.png)
 
 - 이후 test01로 접속 시에만 FTP접속이 가능한 것을 볼 수 있습니다.
 
-![08]()
+![08](/KH_Security/Linux/FTP%20Server/img/08.png)
 
 --- 
 
 ## 사용자 제한 설정 (ftpusers / PAM)
 
 ### ftpusers란?
-`ftpusers`는 **PAM(Pluggable Authentication Module)을 이용한 FTP 접속 제한 방식**으로,
-vsftpd 자체 설정(`user_list`)과는 **별도로 동작하는 인증 단계의 접근 제어 기능**이다.
 
-- 제한 설정 파일
+- `ftpusers`는 **PAM(Pluggable Authentication Module)을 이용한 FTP 접속 제한 방식**으로,
+- vsftpd 자체 설정(`user_list`)과는 **별도로 동작하는 인증 단계의 접근 제어 기능**이다.
+
+- 제한 설정 파일  
 ```text
 /etc/vsftpd/ftpusers
 ```
@@ -235,18 +236,6 @@ vsftpd 자체 설정(`user_list`)과는 **별도로 동작하는 인증 단계�
 ```text
 /etc/pam.d/vsftpd
 ```
-
----
-
-### /etc/pam.d/vsftpd 설정
-
-```conf
-auth required pam_listfile.so item=user sense=deny file=/etc/vsftpd/ftpusers onerr=succeed
-```
-
-- sense값을 `allow`로 바꿉니다.
-
----
 
 ### sense 옵션에 따른 동작 방식
 
@@ -257,5 +246,35 @@ auth required pam_listfile.so item=user sense=deny file=/etc/vsftpd/ftpusers one
 
 ---
 
-## ftpusers 실습
+### /etc/pam.d/vsftpd 설정
 
+- `sense=deny (기본값)`
+
+```conf
+auth required pam_listfile.so item=user sense=allow file=/etc/vsftpd/ftpusers onerr=succeed
+```
+
+![09](/KH_Security/Linux/FTP%20Server/img/09.png)
+
+- sense값을 `allow`로 바꿉니다.
+
+---
+
+### /etc/pam.d/vsftpd 설정
+
+- test02를 넣어줍니다.
+
+![10](/KH_Security/Linux/FTP%20Server/img/10.png)
+
+---
+
+### 사용자 계정 접속 테스트
+
+- `test01, test02, test03` 사용자 계정이 접속 되는 지 확인해줍니다.
+
+![11](/KH_Security/Linux/FTP%20Server/img/11.png)
+
+- sense = allow인 상태에서 `test02` 계정만 등록되어 있으므로  
+접속이 가능하고 나머지 계정은 실패합니다.
+
+---
