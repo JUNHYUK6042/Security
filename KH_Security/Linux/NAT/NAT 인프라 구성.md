@@ -1,4 +1,4 @@
-# NAT 환경 구성 실습 (Rocky Linux 기반)
+# NAT 환경 구성
 
 ## 개요
 
@@ -15,31 +15,9 @@
 
 ---
 
-## Linux11 네트워크 설정
-
-- 사진 -
-
-- IP 주소 : 192.168.11.126 
-- 서브넷 마스크 : 255.255.255.0  
-- 게이트웨이 : 192.168.11.1  
-- DNS : 8.8.8.8  
-
----
-
-## Linux12 네트워크 설정
-
-- 사진 - 
-
-- IP 주소 : 192.168.12.126
-- 서브넷 마스크 : 255.255.255.0  
-- 게이트웨이 : 192.168.12.1
-- DNS : 8.8.8.8  
-
----
-
 ## Router (ens160) 네트워크 설정
 
-- 사진 -
+![02](/KH_Security/Linux/NAT/img/02.png)
 
 - IP 주소 : 192.168.11.254
 - 서브넷 마스크 : 255.255.255.0  
@@ -50,12 +28,33 @@
 
 ## Router (ens###) 네트워크 설정
 
-![02](/Linux/NAT%20configuration/imgs/02.png)
+![03](/KH_Security/Linux/NAT/img/03.png)
 
 - IP 주소 : 192.168.12.1  
 - 서브넷 마스크 : 255.255.255.0
 - 게이트웨이 : X
 - DNS : X
+
+---
+
+## Linux11 네트워크 설정
+
+![04](/KH_Security/Linux/NAT/img/04.png)
+- IP 주소 : 192.168.11.127  
+- 서브넷 마스크 : 255.255.255.0  
+- 게이트웨이 : 192.168.11.1  
+- DNS : 8.8.8.8  
+
+---
+
+## Linux12 네트워크 설정
+
+![05](/KH_Security/Linux/NAT/img/05.png)
+
+- IP 주소 : 192.168.12.127
+- 서브넷 마스크 : 255.255.255.0  
+- 게이트웨이 : 192.168.12.1
+- DNS : 8.8.8.8  
 
 ---
 
@@ -65,7 +64,7 @@
 systemctl disable firewalld.service  
 systemctl stop firewalld.service  
 ```
-- 사진 -
+![06](/KH_Security/Linux/NAT/img/06.png)
 
 - 위 두 명령어는 다음을 의미합니다.
   - 현재 실행 중인 firewalld 서비스를 중지합니다.
@@ -80,7 +79,7 @@ systemctl stop firewalld.service
 
 `net.ipv4.ip_forward=1`
 
-(사진)
+![07](/KH_Security/Linux/NAT/img/07.png)
 
 - 이 설정은 해당 라우터에서 패킷을 Linux 12 네트워크 대역으로 보내기 위한 설정입니다.
 
@@ -90,7 +89,7 @@ systemctl stop firewalld.service
 
 `sysctl -p`
 
-- 사진 -
+![08](/KH_Security/Linux/NAT/img/08.png)
 
 - `/etc/sysctl.conf`에 설정한 커널 옵션을  
   재부팅 없이 즉시 적용합니다.
@@ -103,7 +102,7 @@ systemctl stop firewalld.service
 ```text
 SELINUX=disabled  
 ```
-(사진)
+![09](/KH_Security/Linux/NAT/img/09.png)
 
 - SELinux를 완전히 비활성화하여 커널 보안 정책으로 인한 통신 차단을 제거합니다.
 - 해당 설정은 재부팅 후 적용됩니다.
@@ -117,7 +116,7 @@ SELINUX=disabled
 
 `route -p add 192.168.12.0 MASK 255.255.255.0 192.168.11.254`
 
-(사진)
+![10](/KH_Security/Linux/NAT/img/10.png)
 
 - -p 옵션의 의미
   - 시스템 재부팅 후에도 라우팅 정보를 유지합니다.
@@ -130,11 +129,12 @@ SELINUX=disabled
 - 추가를 해주어야 Linux11에서 Linux12로 패킷을 전송할 수 있습니다.
 
 ```text
-ip route add 192.168.12.0/24 via 192.168.11.254 dev ens160  
+nmcli con mod ens160 +ipv4.routes "192.168.12.0/24 192.168.11.254"
+nmcli con up ens160
 ```
-(사진)
+![11](/KH_Security/Linux/NAT/img/11.png)
 
-- ip route 확인 시  
+- `ip route` 확인 시  
   192.168.12.0/24 네트워크로 가는 경로가 정상적으로 추가된 것을 확인할 수 있습니다.
 
 ---
@@ -143,16 +143,38 @@ ip route add 192.168.12.0/24 via 192.168.11.254 dev ens160
 
 ### Linux11
 
-(사진)
-
-### Router
-
-(사진)
+![12](/KH_Security/Linux/NAT/img/12.png)
 
 ### Linux12
 
-(사진)
+![13](/KH_Security/Linux/NAT/img/13.png)
+
+### Router
+
+![14](/KH_Security/Linux/NAT/img/14.png)
 
 - 각 시스템의 인터페이스와 IP 상태가 정상임을 확인합니다.
+
+---
+
+## 통신 테스트
+
+### Linux11 -> Linux 12 통신 테스트
+
+```text
+ping 192.168.12.127
+```  
+![15](/KH_Security/Linux/NAT/img/15.png)
+
+- 정상적으로 응답이 수신되는 것을 확인할 수 있습니다.
+
+### Linux12 -> Linux 11 통신 테스트
+
+```text
+ping 192.168.11.127
+```  
+![16](/KH_Security/Linux/NAT/img/16.png)
+
+- Linux12에서도 정상적으로 응답이 수신되는 것을 확인할 수 있습니다.
 
 ---
