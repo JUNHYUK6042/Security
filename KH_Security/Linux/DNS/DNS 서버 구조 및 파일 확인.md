@@ -159,7 +159,7 @@ nslookup www.google.com 192.168.35.214
 ```
 
 - `nslookup` : 도메인 이름과 IP 주소를 서로 변환해보며 DNS 동작을 확인하는 조회 도구입니다.  
-![05](/KH_Security/Linux/DNS/img/01.png)
+![05](/KH_Security/Linux/DNS/img/05.png)
 
 - www.google.com의 IP 주소를 Local DNS 서버(192.168.35.214)에게 질의를 한 것입니다.
 - 그 뒤에 Local DNS 서버가 클라이언트에게 www.google.com의 IP 주소를 응답해 준 것입니다.
