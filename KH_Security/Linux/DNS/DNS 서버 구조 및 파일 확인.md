@@ -137,6 +137,34 @@ a.root-servers.net.     518400  IN  A   198.41.0.4
   - DNS의 시작은 a.root-servers.net에게 질의
 - `a.root-servers.net.     518400  IN  A   198.41.0.4` : 실제 IP 주소를 알려줌
 
+### var/named/zone 파일
+
+- `파일 구성`
+```
+$TTL 1D
+@ IN SOA ns.ast06.sec. root.ns.ast06.sec. (
+                              0 ; Serial
+                              1D ; Refresh
+                              1H ; Retry
+                              1W ; Expire
+                              3H ) ; Minimum
+; Name Server
+     IN      NS     ns.ast06.sec.
+; Host address
+       IN    A      192.168.35.216 - 도메인의 IP 지정
+ns     IN    A      192.168.35.214 - 네임 서버의 IP 지정
+mail   IN    A      192.168.35.216 - 메일 서버의 IP 지정
+```
+
+```text
+ns.ast06.sec. : zone 파일의 주 네임서버
+root.ns.ast06.sec. : 관리자 이메일 (root@ns.ast06.sec
+IN NS ns.ast06.sec. : ast06.sec를 관리하는 네임서버를 의미
+```
+
+- 주의할점
+  - 내용이 수정되면 반드시 serial 번호를 수정해야 합니다.
+
 ---
 
 ## named 데몬 제어
