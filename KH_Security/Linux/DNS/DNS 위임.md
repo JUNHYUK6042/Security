@@ -202,4 +202,4 @@ nslookup ns.ast06.sec
 
 - 정상적으로 IP 주소가 응답이 오는 것을 확인할 수 있습니다.
 - Local Dns Server는 Cache Name Server로 하였습니다.
-  Cache Name Server의 IP 주소는 192.168.11.217에게 물어본 것을 확인할 수 있습ㄴ다.
+  Cache Name Server의 IP 주소는 192.168.11.217에게 물어본 것을 확인할 수 있습니다.
