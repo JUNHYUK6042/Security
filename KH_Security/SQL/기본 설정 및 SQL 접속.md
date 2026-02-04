@@ -82,6 +82,13 @@ school.sql : UTF-8
 sc.sql : ANSI
 ```
 
+- 경로
+```text
+C:\User\사용자계정\
+```
+
+- 위의 경로 밑에 `sc.sql` 파일과 `school.sql` 파일을 넣어줍니다.
+
 ![07](/KH_Security/SQL/img/07.png)
 
 - 해당 SQL 파일들은 Windows 사용자 홈 디렉터리(`C:\Users\ast06`)에 저장되어 있으며,  
