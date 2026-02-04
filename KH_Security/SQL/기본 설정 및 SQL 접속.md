@@ -2,7 +2,7 @@
 
 - 다음 경로들은 반드시 알고 있어야 합니다.
 
-```
+```text
 ORACLE_BASE -> C:\app\ora19c
 ORACLE_HOME -> C:\app\ora19c\client
 TND_ADMIN -> C:\app\ora19c\client\network\admin
@@ -31,13 +31,13 @@ TND_ADMIN -> C:\app\ora19c\client\network\admin
 
 #### Oracle 기본 위치 경로 (ORACLE_BASE)
 
-```
+```text
 C:\app\ora19c
 ```
 
 #### Oracle 소프트웨어 위치 (ORACLE_HOME)
 
-```
+```text
 C:\app\ora19c\client
 ```
 
@@ -66,7 +66,7 @@ C:\app\ora19c\client
 ### TNS_ADMIN
 
 - 경로
-```
+```text
 C:\app\ora19c\client\network\admin
 ```
 
@@ -77,7 +77,7 @@ C:\app\ora19c\client\network\admin
 ### sc.sql & school.sql
 
 - 인코딩 정보  
-```
+```text
 school.sql : UTF-8
 sc.sql : ANSI
 ```
@@ -100,8 +100,8 @@ C:\User\사용자계정\
 
 - Oracle 데이터베이스 접속을 확인하기 위해 `tnsping` 명령어를 사용했습니다.
 
-```
-tnsping dal
+```text
+  tnsping dal
 ```
 
 ![08](/KH_Security/SQL/img/08.png)
@@ -116,7 +116,7 @@ Oracle 데이터베이스 서버와의 네트워크 연결이 정상임을 확�
 
 - 제 계정으로 접속하기 위해 다음과 같이 입력했습니다.
 
-```
+```text
 sqlplus ast06/ast06@dal
 ```
 
