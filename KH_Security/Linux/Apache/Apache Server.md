@@ -35,69 +35,138 @@
 
 ---
 
-## 주요 경로
-
+## Apache Server 주요 구성 파일
 
 - `실행 데몬: /app/apache/bin/httpd`
   - httpd는 실제로 웹 요청을 처리하는 Apache의 본체 데몬이다
 - `제어 스크립트: /app/apache/bin/apachectl`
   - Apache를 안전하게 시작·중지·재시작하는 관리자용 스크립트입니다.
   ```text
-  /app/apache/bin/apachectl start - 
-  /app/apache/bin/apachectl stop
-  /app/apache/bin/apachectl restart
+  /app/apache/bin/apachectl start - Apache 서버 시작
+  /app/apache/bin/apachectl stop - Apache 서버 중지
+  /app/apache/bin/apachectl restart - Apache 서버 재시작
   ```
 - `설정 파일: /app/apache/conf/httpd.conf`
   - Apache의 모든 동작 규칙을 정의하는 파일
+  - DocumentRoot, ServerName <Directory> .... </Directory> 등을 설정
 - `기본 페이지: /app/apache/htdocs/index.html`
+
+### Apache Server 구동 
+
+```text
+/app/apache/bin/apachectl start (stop | restart)
+```
+
+- Apache Server 자동 실행
+  - `/etc/rc.d/rc.local` 파일에 `/app/apache/bin/apachectl start`과  
+  /app/apache/bin/apachectl stop 명령어를 넣어줍니다.
+  - `/etc/rc.d/rc.local` : 시스템이 부팅 완료 단계에 들어갔을 때, 관리자가 지정한 명령어를 자동 실행해주는 파일입니다.
+ 
+---
+
+## Apache Server 실습
+
+### 웹 전용 그룹 및 사용자 계정 생성
+
+```text
+- 그룹 생성
+  groupadd -g 2000 web
+
+- 사용자 생성
+  useradd -u 2100 webmaster
+```
+
+---
+
+### DocumentRoot 디렉터리 및 기본 페이지 생성
+
+Apache에서 사용할 웹 루트 디렉터리와 index.html 파일을 생성한다.
+
+- 디렉터리 생성
+```text
+mkdir -p /home/httpd/html
+```
+
+- 기본 페이지 생성
+```text
+echo "문자열" > /home/httpd/html/index.html
+```
+
+- 소유자 변경
+```text
+chown -R webmaster.web /home/httpd
+```
+ - 웹 콘텐츠 관리 계정(webmaster)이 root 권한 없이 웹 파일을 관리하도록 하기 위해 변경해줍니다.
+
+---
+
+### bind mount를 이용한 디렉터리 접근 제한
+
+- webmaster 계정이 웹 콘텐츠 디렉터리만 관리할 수 있도록  
+`bind mount`를 사용하여 접근 범위를 제한한다.
+
+```text
+mount -B /home/httpd /home/webmaster/httpd
+```
+
+---
+
+### Apache 설정 파일 설정 (가상 호스트)
+
+- Apache 설정 파일에서 DocumentRoot를 변경하고  
+해당 디렉터리에 대한 접근 설정을 추가한다.
+
+- 설정 파일
+  - `/app/apache/conf/httpd.conf`
+
+- **ServerName localhost**
+```text
+Apache가 자기 자신을 어떤 이름의 서버로 인식할지 지정
+```
+
+- **DocumentRoot "/home/httpd/html"**
+```text
+DocumentRoot는 웹으로 노출되는 파일의 기준 디렉터리를 지정
+```
+
+- **Directory 접근 설정**
+```text
+<Directory "/home/httpd/html"> : DocumentRoot 디렉터리에 대한 접근 규칙을 정의하는 블록
+    AllowOverride None
+      - Apache 설정은 중앙에서만 관리하기 위해 .htaccess를 차단
+
+    Options Indexes FollowSymLinks
+      - 디렉터리 기능(목록 표시, 심볼릭 링크 사용)을 제어
+
+    Order allow,deny
+      - 접근 허용/차단 규칙의 적용 순서를 정의
+
+    Allow from all
+      - 모든 IP의 웹 접근을 허용
+</Directory>
+```
+
+- **conf/extra/httpd-vhosts.conf 파일 설정 설명**
+NameVirtualHost *:80   ← * 대신 IP 지정이 가능하다. 
+<VirtualHost *:80>
+  ServerAdmin [메일 주소]
+  DocumentRoot "[Web 홈 디렉토리]"
+  ServerName [접속 도메인명]
+  ServerAlias [별명]
+  ErrorLog "logs/[에러 로그 파일명]"
+  CustomLog "logs/[접속 로그 파일명]"  common
+</VirtualHost>
 
 
 ---
 
-## httpd.conf 문법 검사
-/app/apache/bin/httpd -t
+### 서비스 재시작
 
-## 전역 환경 설정
-ServerRoot "/app/apache"
-Timeout 120
-MaxClients 150
-StartServers 20
-ServerName localhost
-
-## 기본 서버 설정
-DocumentRoot "/app/apache/htdocs"
-DirectoryIndex index.html index.php
-ErrorLog logs/error_log
-CustomLog logs/access_log combined
-ServerAdmin root@localhost
-
-## Directory 설정
-<Directory "/app/apache/htdocs">
-    Options Indexes FollowSymLinks
-    AllowOverride None
-    Order allow,deny
-    Allow from all
-</Directory>
-
-## 접근 제어 (2.2 방식)
-Order deny,allow
-Deny from all
-Allow from 192.168.123.
-
-## Require 방식
-Require all granted
-Require not ip 192.168.123.0/24
-
-## 사용자 홈 디렉토리
-<Directory "/home/*/public_html">
-    Options Indexes FollowSymLinks
-    AllowOverride None
-    Require all granted
-</Directory>
-
-## DocumentRoot 분리
-- 웹 계정: webmaster
-- DocumentRoot: /home/httpd/html
+- 설정 적용을 위해 Apache 서비스를 재시작한다.
+```text
+/app/apache/bin/apachectl restart
+```
+---
 
 ## 가상 호스트 (IP 기반)
 <VirtualHost 192.168.10.2>
