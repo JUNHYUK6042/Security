@@ -230,4 +230,18 @@ NameVirtualHost *:80
 
 ## 실습 결과 확인
 
+```text
+http://www.ast06.sec
+
+http://www.ast06.itc
+```
+
+- `ast06.sec`  
+![01](/KH_Security/Linux/Apache/img/01.png)
+
+
+- `ast06.itc`  
+![02](/KH_Security/Linux/Apache/img/02.png)
+
+
 ---
