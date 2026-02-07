@@ -66,6 +66,10 @@
 
 ## Apache Server 실습
 
+- **관리자 정보**
+  - 계정 : webmaster(group:web)
+  - Document Root : /home/httpd/html
+
 ### 웹 전용 그룹 및 사용자 계정 생성
 
 ```text
@@ -111,13 +115,15 @@ mount -B /home/httpd /home/webmaster/httpd
 
 ---
 
-### Apache 설정 파일 설정 (가상 호스트)
+### Apache 설정 파일 설정 (기본)
 
 - Apache 설정 파일에서 DocumentRoot를 변경하고  
 해당 디렉터리에 대한 접근 설정을 추가한다.
 
-- 설정 파일
-  - `/app/apache/conf/httpd.conf`
+- **설정 파일**
+```text
+/app/apache/conf/httpd.conf
+```
 
 - **ServerName localhost**
 ```text
@@ -146,21 +152,75 @@ DocumentRoot는 웹으로 노출되는 파일의 기준 디렉터리를 지정
 </Directory>
 ```
 
+---
+
+### Apache 설정 파일 설정 (가상 호스트.version)
+
+- /home/httpd/sec, itc/index.html 실습 때 사용될 설정입니다.
+
 - **conf/extra/httpd-vhosts.conf 파일 설정 설명**
-NameVirtualHost *:80   ← * 대신 IP 지정이 가능하다. 
-<VirtualHost *:80>
-  ServerAdmin [메일 주소]
-  DocumentRoot "[Web 홈 디렉토리]"
-  ServerName [접속 도메인명]
-  ServerAlias [별명]
-  ErrorLog "logs/[에러 로그 파일명]"
-  CustomLog "logs/[접속 로그 파일명]"  common
+
+- include 설정
+  - 다음과 같은 명령어의 주석 해제를 해야합니다.
+  - 주석 해제하는 이유 : **httpd.conf에서 httpd-vhosts.conf 파일을 불러오지 않을 시 적용이 되지 않기 때문입니다.**
+```text
+Include conf/extra/httpd-vhosts.conf 
+```
+
+- 그 이후에 다음과 같이 `httpd-vhosts.conf 파일을 설정 해주어야 합니다.
+```text
+NameVirtualHost *:80   ← * 대신 IP 지정이 가능하다.
+
+<VirtualHost *:80>  
+  ServerAdmin [메일 주소]  
+  DocumentRoot "[Web 홈 디렉토리]"  
+  ServerName [접속 도메인명]  
+  ServerAlias [별명]  
+  ErrorLog "logs/[에러 로그 파일명]"  
+  CustomLog "logs/[접속 로그 파일명]"  
 </VirtualHost>
+```
+
+#### 가상 호스트 (IP 기반)
+```text
+<VirtualHost 192.168.10.###>
+    DocumentRoot /home/httpd/sec
+    ServerName 192.168.10.###
+</VirtualHost>
+
+<VirtualHost 192.168.10.###>
+    DocumentRoot /home/httpd/itc
+    ServerName 192.168.10.###
+</VirtualHost>
+```
+
+#### 가상 호스트 (도메인 기반)
+```text
+NameVirtualHost *:80
+
+<VirtualHost *:80>
+    DocumentRoot /home/httpd/sec
+    ServerName www.ast06.sec
+    ServerAlias ast06.sec
+</VirtualHost>
+
+<VirtualHost *:80>
+    DocumentRoot /home/httpd/itc
+    ServerName www.ast06.itc
+    ServerAlias ast06.itc
+</VirtualHost>
+```
+
+### 가상 호스트 주의사항
+- DocumentRoot 권한 필수
+- DNS 설정 우선
+- /etc/hosts 와 hostname 일치
+- httpd-vhosts.conf include 필요
 
 
 ---
 
-### 서비스 재시작
+## 서비스 재시작
 
 - 설정 적용을 위해 Apache 서비스를 재시작한다.
 ```text
@@ -168,34 +228,6 @@ NameVirtualHost *:80   ← * 대신 IP 지정이 가능하다.
 ```
 ---
 
-## 가상 호스트 (IP 기반)
-<VirtualHost 192.168.10.2>
-    DocumentRoot /home/httpd/sec
-    ServerName 192.168.10.2
-</VirtualHost>
+## 실습 결과 확인
 
-<VirtualHost 192.168.10.3>
-    DocumentRoot /home/httpd/itc
-    ServerName 192.168.10.3
-</VirtualHost>
-
-## 가상 호스트 (도메인 기반)
-NameVirtualHost *:80
-
-<VirtualHost *:80>
-    DocumentRoot /home/httpd/sec
-    ServerName www.example.sec
-    ServerAlias example.sec
-</VirtualHost>
-
-<VirtualHost *:80>
-    DocumentRoot /home/httpd/itc
-    ServerName www.example.itc
-    ServerAlias example.itc
-</VirtualHost>
-
-## 가상 호스트 주의사항
-- DocumentRoot 권한 필수
-- DNS 설정 우선
-- /etc/hosts 와 hostname 일치
-- httpd-vhosts.conf include 필요
+---
