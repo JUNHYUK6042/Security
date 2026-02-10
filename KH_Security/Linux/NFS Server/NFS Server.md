@@ -30,6 +30,16 @@
 
 ---
 
+## NFS 패키지 설치
+
+- NFS 서버와 클라이언트 양쪽 모두 다음 패키지를 설치합니다.
+```
+dnf install -y nfs-utils
+```
+![01](/KH_Security/Linux/NFS%20Server/img/01.png)  
+
+---
+
 ## exports 주요 옵션
 
 | 옵션 | 역할 | 기능 설명 |
@@ -58,9 +68,61 @@ default : `root_squash`
  
 ---
 
-## NFS 클라이언트- mount
+## exports 설정 내용
+
+- 필자는 a1 ~ a8 디렉토리를 생성하고 다음과 같이 설정합니다.
+```
+/home/a1 192.168.64.26(rw,no_root_squash)  
+/home/a2 192.168.64.26(rw,all_squash)  
+/home/a3 192.168.64.26(rw,no_all_squash)  
+/home/a4 192.168.64.26(rw,all_squash,root_squash)  
+/home/a5 192.168.64.26(rw,all_squash,no_root_squash)  
+/home/a6 192.168.64.26(rw,no_all_squash,root_squash)  
+/home/a7 192.168.64.26(rw,no_all_squash,no_root_squash)  
+/home/a8 192.168.64.26(rw,anonuid=5001,anongid=5000)
+```
+
+![02](/KH_Security/Linux/NFS%20Server/img/02.png)
+
+### 의미
+
+```text
+- a1 (no_root_squash) : root 권한이 서버까지 그대로 전달됩니다.
+- a2 (all_squash) : 모든 사용자가 nobody로 처리됩니다.
+- a3 (no_all_squash) : 모든 사용자의 UID/GID가 그대로 유지됩니다.
+- a4 (all_squash, root_squash) : 모든 사용자가 nobody로 강제 매핑됩니다.
+- a5 (all_squash, no_root_squash) : 일반 사용자는 nobody, root만 예외 처리됩니다.
+- a6 (no_all_squash, root_squash) : 일반 사용자는 유지, root만 제한됩니다.
+- a7 (no_all_squash, no_root_squash) : 모든 권한이 그대로 전달됩니다.
+- a8 (anonuid, anongid) : squash 사용자를 특정 계정으로 통제합니다.`
+```
+
+---
+
+## NFS 서버 디렉터리
 
 ```
+mkdir /home/a1 /home/a2 /home/a3 /home/a4 /home/a5 /home/a6 /home/a7 /home/a8
+```
+
+![03](/KH_Security/Linux/NFS%20Server/img/03.png)
+
+---
+
+## exports 적용
+
+```text
+systemctl start nfs-server.service  
+exportfs -rv
+```
+
+![04](/KH_Security/Linux/NFS%20Server/img/04.png)
+
+---
+
+## NFS 클라이언트- mount
+
+```text
 mount -t nfs NFS_서버_IP:/공유디렉토리 /마운트할디렉토리
 ```
 
@@ -69,3 +131,50 @@ mount -t nfs NFS_서버_IP:/공유디렉토리 /마운트할디렉토리
 - 재귀적인 mount는 허용되지 않는다.
 - 마운트된 디렉토리는 서버의 소유자, 그룹 소유자, 퍼미션을 기준으로 인식된다.
 - 마운트 중에는 클라이언트의 해당 디렉토리 설정은 가려진다
+
+```text
+mount 192.168.64.24:/home/a1 /home/a1  
+mount 192.168.64.24:/home/a2 /home/a2  
+mount 192.168.64.24:/home/a3 /home/a3  
+mount 192.168.64.24:/home/a4 /home/a4  
+mount 192.168.64.24:/home/a5 /home/a5  
+mount 192.168.64.24:/home/a6 /home/a6  
+mount 192.168.64.24:/home/a7 /home/a7  
+mount 192.168.64.24:/home/a8 /home/a8  
+```
+
+![05](/KH_Security/Linux/NFS%20Server/img/05.png)
+
+---
+
+## root 사용자 및 일반 사용자 파일 생성 후 결과 확인
+
+### root
+
+![06](/KH_Security/Linux/NFS%20Server/img/06.png)
+
+```text
+  a1 : no_root_squash 옵션으로 인해 클라이언트 root가 서버 root로 그대로 매핑되어, root 권한으로 설정
+  a2 : all_squash로 인해 모든 사용자(root 포함)가 nfsnobody로 매핑되며, other 권한이 적용
+  a3 : root_squash 적용으로 인해 nobody로 매핑되고, other 권한이 적용
+  a4 : 모두 nobody로 매핑되므로, 둘 다 other 권한으로 적용
+  a5 : all_squash 모든 사용자가 nobody로 매핑되기때문에, other 권한으로 적용
+  a6 : root_squash로 인해 nobody로 매핑되며 other 권한으로 적용
+  a7 : 서버에서 root로 일치시키고 서버에서의 root 권한으로 적용
+  a8 : 강제적으로 UID,GID 1000(ast06)으로 강제 매핑하여, ast06 계정 권한으로 적용
+```
+
+### 일반 사용자
+
+![07](/KH_Security/Linux/NFS%20Server/img/07.png)
+
+```text
+  a1 : 서버 사용자와 일치시키기 때문에 자신의 ast06로 권한 설정
+  a2 : all_squash로 인해 모든 사용자(root 포함)가 nfsnobody로 매핑되며, other 권한이 적용
+  a3 : no_all_squash로 서버와 클라이언트 사용자를 일치시켜 ast11 계정의 권한 적용
+  a4 : 모두 nobody로 매핑되므로, 둘 다 other 권한으로 적용
+  a5 : root처럼 nobody로 매핑되어 other 권한으로 적용
+  a6 : no_all_squash 서 버의 사용자와 클라이언트의 사용자를 일치시키면서, ast06 계정의 권한으로 적용
+  a7 : 서버 사용자와 클라이언트 사용자로 간주되어, ast06 계정 권한으로 적용
+  a8 : 강제적으로 UID,GID 1000(ast06)으로 강제 매핑하여, ast06 계정 권한으로 적용
+```
