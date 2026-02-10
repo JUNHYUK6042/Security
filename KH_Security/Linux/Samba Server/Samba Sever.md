@@ -63,8 +63,6 @@
 ```
 ![02](/KH_Security/Linux/Samba%20Server/img/02.png)
 
-- 다음 명령어로 Samba 사용자 목록을 확인합니다.
-
 ---
 
 ## 공유 디렉터리 생성 및 권한 설정
