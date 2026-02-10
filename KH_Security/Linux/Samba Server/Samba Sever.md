@@ -103,9 +103,15 @@
 ---
 
 ### Symlink 디렉토리 접근 설정
-- `follow symlinks = yes`
-- `wide links = yes`
-- `unix extensions = no`
+
+- `follow symlinks = yes`  
+  심볼릭 링크를 따라 디렉터리에 접근할 수 있도록 허용합니다.
+
+- `wide links = yes`  
+  공유 디렉터리 외부를 가리키는 심볼릭 링크 접근을 허용합니다.
+
+- `unix extensions = no`  
+  Unix 확장 기능을 비활성화하여 Windows 클라이언트 접근 제한을 해제합니다.
 
 ---
 
