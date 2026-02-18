@@ -1,0 +1,13 @@
+$TTL    1D
+@   IN   SOA  ns.kh-adsc.com.   root.ns.kh-adsc.com. (
+                                   3         ; Serial
+                                   1D        ; Refresh
+                                   1H        ; Retry
+                                   1W        ; Expire
+                                   3H )      ; Minimum
+; Name Server
+   IN   NS      ns.kh-adsc.com.
+; Host address
+            IN     A       192.168.0.130
+ns          IN     A       192.168.0.54
+www         IN     A       192.168.0.130
