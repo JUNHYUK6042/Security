@@ -10,3 +10,11 @@
 - `04.ORDER BY`
 - `05.WHERE`
 - `06.JOIN`
+- `07.Self Join & Outer Join`
+- `08.SubQuery`
+- `09.집합 연산자`
+- `10.단일 행 함수`
+- `11.Group By & Having`
+- `12.DML & TCL`
+- `13.Transaction & Lock`
+- `14.DDL 테이블 생성 & 데이터 타입`
