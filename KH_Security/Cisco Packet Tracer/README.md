@@ -9,3 +9,10 @@
 03) Switch (VLAN)
 04) VLAN Routing & Trunk Routing
 05) Router (Static, RIP)
+06-1) Router (OSPF)
+06-2) Router (OSPF-Multi)
+07-1) Router (EIGRP)
+07-2) Router (EIGRP - DUAL)
+08-1) Redistribute (Static)
+08-2) Redistribute (RIP)
+08-3) Redistribute (OSPF + EIGRP)
