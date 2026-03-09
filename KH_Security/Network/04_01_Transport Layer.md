@@ -100,27 +100,45 @@
 
 ## Demultiplexing 요구 사항
 
-- 각 socket은 유일한 식별자를 가져야 합니다.
-- 각 segment는 적절한 socket을 가리키는 특별한 field를 가져야 합니다.
-- 이 field는 source port 번호와 destination port 번호입니다.
+Transport layer에서 수신된 데이터를 올바른 Application으로 전달하기 위해
+다음 조건이 필요합니다.
+
+- 각 **socket**은 서로 구분할 수 있도록 **유일한 식별자**를 가집니다.
+- 각 **segment**는 자신이 전달될 **socket을 가리키는 특별한 field**를 가집니다.
+- 이 field가 바로 **source port 번호와 destination port 번호**입니다.
+
+`즉, Transport layer는 port 번호를 이용하여 어떤 프로그램이 데이터를 받을지 결정합니다.`
 
 ### Port 번호
 
-- 범위: 0 ~ 65535
-- 0 ~ 1023: well-known port (RFC 1700 명시)
+Application(프로그램)을 구분하기 위한 번호입니다.
 
-### 동작 방식
+- 범위 : **0 ~ 65535**
+- **0 ~ 1023 : well-known port**
 
-- segment가 host에 도착
-- Transport Layer가 destination port 번호 검사
-- 해당 socket으로 전달
+well-known port는 **표준 서비스에 사용되는 포트 번호**이며 RFC 1700에 정의되어 있습니다.
+
+- **예시**
+```text
+- 80  → HTTP
+- 443 → HTTPS
+- 53  → DNS
+- 22  → SSH
+```
+
+### Demultiplexing 동작 방식
+```text
+- segment가 host에 도착하면 Transport layer가 segment header의 destination port 번호를 확인합니다.
+- 해당 port 번호와 연결된 socket을 찾고, 그 socket을 사용하는 Application으로 data를 전달합니다.
+```
 
 ---
 
 ## Connectionless Demultiplexing (UDP)
 
-- UDP socket은 (destination IP, destination port)로 식별된다.
-- source IP나 source port가 달라도 destination이 같으면 동일 socket으로 전달된다.
+- UDP socket은 (destination IP, destination port)로 식별됩니다.
+- source IP나 source port가 달라도 동일한 destination IP와 destination port를 갖는다면  
+동일한 socket을 통해 processd에 전달됩니다.
 
 ---
 
@@ -133,8 +151,14 @@
   - destination port
 
 - Server는 동시에 여러 TCP socket을 지원할 수 있다.
-- 각 connection은 서로 다른 4-tuple로 구별된다.
-- non-persistent HTTP의 경우 요청마다 새로운 TCP connection을 사용한다.
+  - 각 connection은 서로 다른 4-tuple로 구별된다.
+
+- Web Server는 러 client의 요청을 동시에 처리해야 합니다.  
+**각 client connection마다 서로 다른 socket**을 사용한다.
+  
+- non-persistent HTTP의 경우 요청마다 새로운 TCP connection을 생성하고,  
+각 object마다 새로운 TCP connection을 이용합니다.
+
 
 ---
 
