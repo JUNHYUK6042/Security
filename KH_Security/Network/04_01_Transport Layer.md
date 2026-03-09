@@ -8,7 +8,7 @@
 
 ---
 
-# 4.1 Transport Layer 서비스
+# 4_1 Transport Layer 서비스
 
 ## Transport Layer 역할
 
@@ -46,9 +46,16 @@
 
 ### TCP (신뢰적 연결지향 서비스)
 
-- 혼잡 제어
-- 흐름 제어
-- 연결지향
+- 혼잡 제어 : 네트워크 자체가 과부하 되지 않도록 전송 속도를 조절하는 것이고, 네트워크가 감당할 수 있는 만큼만 보내라는 뜻입니다.
+  - 동작 방식 : 모든 송신자가 동시에 많은 데이터를 보내면 TCP는 속도를 조절합니다.
+
+- 흐름 제어 : 수신자의 처리 속도에 맞게 송신자의 전송 속도를 조절하고, 여기서 사용하는 것이 TCP Window입니다.
+  - 동작 방식 : 수신자는 ACK를 보내면서 Window Size를 알려줍니다.
+
+- 연결지향 : 데이터를 보내기 전에 먼저 연결을 설정하는 방식입니다.
+  - 동작 방식 : TCP 연결을 합니다.   
+  (TCP 연결 : 3-way handshake( Client → SYN, Server → SYN ACKClient → ACK, 연결 종료 : 4-way handshake(FIN, ACK, FIN, ACK))
+
 - 신뢰적 데이터 전송
 
 ### UDP (비신뢰적 비연결지향 서비스)
@@ -61,28 +68,41 @@
 
 ---
 
-# 4.2 다중화와 역다중화
+# 4_2 다중화와 역다중화
 
 ## Multiplexing / Demultiplexing
 
-### Multiplexing (송신측)
+### Multiplexing (송신 측)
 
-- 여러 socket으로부터 data를 모음
-- 각 data에 header 정보를 추가하여 segment로 캡슐화
-- 하위 layer로 전달
+- 여러 Application에서 보내는 데이터를 하나의 네트워크로 보내기 위해 데이터를 모아서 segment로 만드는 과정입니다.
 
-### Demultiplexing (수신측)
+#### 동작 과정
+```text
+1. 여러 socket으로부터 data를 수집합다.
+2. 각 data에 port 번호 등의 header 정보를 추가합니다.
+3. Transport layer segment로 캡슐화합니다.
+4. Network layer로 전달합니다.
+```
 
-- 수신된 segment의 목적지 port 번호를 확인
-- 해당 socket으로 data 전달
+## Demultiplexing (수신측)
+
+- 수신된 segment를 확인하여 어떤 Application이 받아야 하는 데이터인지 구분하는 과정입니다.
+
+#### 동작 과정
+```text
+1. segment가 Host에 도착합니다.
+2. Transport Layer가 header의 destination port 번호를 확인합니다.
+3. 해당 port를 사용하는 socket을 찾습니다.
+4. 해당 Application으로 data를 전달합니다.
+```
 
 ---
 
 ## Demultiplexing 요구 사항
 
-- 각 socket은 유일한 식별자를 가져야 한다.
-- 각 segment는 적절한 socket을 가리키는 특별한 field를 가져야 한다.
-- 이 field는 source port 번호와 destination port 번호이다.
+- 각 socket은 유일한 식별자를 가져야 합니다.
+- 각 segment는 적절한 socket을 가리키는 특별한 field를 가져야 합니다.
+- 이 field는 source port 번호와 destination port 번호입니다.
 
 ### Port 번호
 
@@ -118,7 +138,7 @@
 
 ---
 
-# 4.3 UDP
+# 4_3 UDP
 
 ## UDP 특징 (RFC 768)
 
