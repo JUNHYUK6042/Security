@@ -136,6 +136,8 @@ well-known port는 **표준 서비스에 사용되는 포트 번호**이며 RFC 
 
 ## Connectionless Demultiplexing (UDP)
 
+![01](/KH_Security/Network/img/Connectionless%20demultiplexing.png)
+
 - UDP socket은 (destination IP, destination port)로 식별됩니다.
 - source IP나 source port가 달라도 동일한 destination IP와 destination port를 갖는다면  
 동일한 socket을 통해 processd에 전달됩니다.
@@ -143,6 +145,10 @@ well-known port는 **표준 서비스에 사용되는 포트 번호**이며 RFC 
 ---
 
 ## Connection-Oriented Demultiplexing (TCP)
+
+
+- **Connection oriented demux**
+![02](/KH_Security/Network/img/Connection%20oriented%20demux.png)
 
 - TCP socket은 다음 4개 요소로 식별된다.
   - source IP
@@ -153,12 +159,14 @@ well-known port는 **표준 서비스에 사용되는 포트 번호**이며 RFC 
 - Server는 동시에 여러 TCP socket을 지원할 수 있다.
   - 각 connection은 서로 다른 4-tuple로 구별된다.
 
+- **Connect oriented demux Thread Web server**
+![03](/KH_Security/Network/img/Connection%20oriented%20demux%20Thread%20Web%20server.png)
+
 - Web Server는 러 client의 요청을 동시에 처리해야 합니다.  
 **각 client connection마다 서로 다른 socket**을 사용한다.
   
 - non-persistent HTTP의 경우 요청마다 새로운 TCP connection을 생성하고,  
 각 object마다 새로운 TCP connection을 이용합니다.
-
 
 ---
 
