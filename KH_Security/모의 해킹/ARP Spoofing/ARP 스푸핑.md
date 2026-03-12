@@ -60,6 +60,8 @@ ip n
 
 ## ARP Spoofing 공격
 
+![04](/KH_Security/모의%20해킹/ARP%20Spoofing/img/04.png)
+
 - 다음과 같은 명령어를 통해 ARP Spoofing 공격을 시도합니다.
 ```
 send_arp 192.168.11.17 00:0c:29:8e:f5:9c 192.168.11.7 00:0c:29:f9:78:42
@@ -69,8 +71,6 @@ send_arp 192.168.11.17 00:0c:29:8e:f5:9c 192.168.11.7 00:0c:29:f9:78:42
 send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 -> 192.168.11.17에게 192.168.11.7의 MAC 주소를 공격자의 MAC 주소(00:0c:29:8e:f5:9c)라고 알린다.
 ```
-
-![04](/KH_Security/모의%20해킹/ARP%20Spoofing/img/04.png)
 
 ---
 
@@ -92,12 +92,205 @@ send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 
 ---
 
-## Wireshark 패킷 분석
+## Wireshark 패킷 분석 1 (send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38)
+
+- ARP Spoofing 공격으로 전달된 ARP 패킷을 캡쳐하여 분석했습니다.
+
+## ARP Request
+
+![07](/KH_Security/모의%20해킹/ARP%20Spoofing/img/07.png)
+
+### Wireshark Info
+- Who has 192.168.11.17? Tell 192.168.11.7
+
+#### 의미
+- 192.168.11.7이 “192.168.11.17의 MAC 주소가 뭐냐? 알면 나(192.168.11.7)에게 알려줘” 라고 묻는 패킷이다.
+
+### Ethernet Header 분석
+```
+- dst MAC : 00:0c:29:a4:4a:38
+- src MAC : 00:0c:29:8e:f5:9c
+- type : 08 06 → ARP
+
+- 설명
+  - Ethernet Type이 `0x0806`이므로 이 프레임은 ARP 패킷이다.  
+  - 송신 MAC은 `00:0c:29:8e:f5:9c`이고, 이 장비가 요청을 보낸 장비이다.
+```
+
+### ARP Header 분석
+```
+- hardware type (2byte) : 00 01 → Ethernet
+- protocol type (2byte) : 08 00 → IPv4
+- hardware length (1byte) : 06 → MAC 주소 길이 6byte
+- protocol length (1byte) : 04 → IP 주소 길이 4byte
+- opcode (2byte) : 00 01 → ARP Request
+
+- sender MAC address (6byte) : 00:0c:29:8e:f5:9c
+- sender IP address (4byte) : 192.168.11.7
+
+- target MAC address (6byte) : 00:00:00:00:00:00
+- target IP address (4byte) : 192.168.11.17
+```
+
+### 핵심 해석
+이 패킷에서 가장 중요한 부분은 다음 두 가지이다.
+
+- sender IP = 192.168.11.7
+  - 질문을 보낸 장비가 192.168.11.7이다.
+
+- target MAC = 00:00:00:00:00:00
+  - 아직 192.168.11.17의 MAC 주소를 모르기 때문에 비워둔 상태이다.
+
+- 즉, 이 패킷은  
+**192.168.11.7이 192.168.11.17의 MAC 주소를 알아내기 위해 보낸 ARP 요청 패킷**이다.
+
+---
+
+## ARP Reply
+
+![08](/KH_Security/모의%20해킹/ARP%20Spoofing/img/08.png)
+
+### Wireshark Info
+- 192.168.11.17 is at 00:0c:29:a4:4a:38
+
+### 의미
+- 192.168.11.17이 “내 MAC 주소는 00:0c:29:a4:4a:38야” 라고 응답하는 패킷이다.
+
+
+### Ethernet Header 분석
+```
+- dst MAC : 00:0c:29:8e:f5:9c
+- src MAC : 00:0c:29:a4:4a:38
+- type : 08 06 → ARP
+
+- 설명
+  - 이번에는 송신 MAC이 `00:0c:29:a4:4a:38`이다.
+  - 즉, 192.168.11.17이 응답을 보내고 있다는 뜻이다.
+```
+
+### ARP Header 분석
+```
+- hardware type (2byte) : 00 01 → Ethernet
+- protocol type (2byte) : 08 00 → IPv4
+- hardware length (1byte) : 06 → MAC 주소 길이 6byte
+- protocol length (1byte) : 04 → IP 주소 길이 4byte
+- opcode (2byte) : 00 02 → ARP Reply
+
+- sender MAC address (6byte) : 00:0c:29:a4:4a:38
+- sender IP address (4byte) : 192.168.11.17
+
+- target MAC address (6byte) : 00:0c:29:8e:f5:9c
+- target IP address (4byte) : 192.168.11.7
+```
+
+### 핵심 해석
+- 이 패킷은  
+**192.168.11.17이 자신의 MAC 주소(00:0c:29:a4:4a:38)를 192.168.11.7에게 알려주는 ARP 응답 패킷**이다.
+
+- 즉, 192.168.11.7은 이 응답을 받고 ARP 테이블에 다음 정보를 저장할 수 있다.  
+192.168.11.17 → 00:0c:29:a4:4a:38
+
+---
+
+## Wireshark 패킷 분석 2 (send_arp 192.168.11.17 00:0c:29:8e:f5:9c 192.168.11.7 00:0c:29:f9:78:42)
 
 ### ARP Request
 
-![07](/KH_Security/모의%20해킹/ARP%20Spoofing/img/08.png)
+![09](/KH_Security/모의%20해킹/ARP%20Spoofing/img/09.png)
 
-### ARP Reply
+### Wireshark Info
+- Who has 192.168.11.7? Tell 192.168.11.17
 
-![08](/KH_Security/모의%20해킹/ARP%20Spoofing/img/08.png)
+### 의미
+- 192.168.11.17이 “192.168.11.7의 MAC 주소가 뭐냐? 알면 나(192.168.11.17)에게 알려줘” 라고 묻는 패킷이다.
+
+---
+
+### Ethernet Header 분석
+```
+- dst MAC : 00:0c:29:f9:78:42
+- src MAC : 00:0c:29:8e:f5:9c
+- type : 08 06 → ARP
+
+- 설명
+  - Ethernet Type이 `0x0806`이므로 이 프레임은 ARP 패킷이다.
+  - 송신 MAC은 `00:0c:29:8e:f5:9c`이고, 이 장비가 요청을 보낸 장비이다.
+```
+
+---
+
+### ARP Header 분석
+```
+- hardware type (2byte) : 00 01 → Ethernet
+- protocol type (2byte) : 08 00 → IPv4
+- hardware length (1byte) : 06 → MAC 주소 길이 6byte
+- protocol length (1byte) : 04 → IP 주소 길이 4byte
+- opcode (2byte) : 00 01 → ARP Request
+
+- sender MAC address (6byte) : 00:0c:29:8e:f5:9c
+- sender IP address (4byte) : 192.168.11.17
+
+- target MAC address (6byte) : 00:00:00:00:00:00
+- target IP address (4byte) : 192.168.11.7
+```
+
+---
+
+### 핵심 해석
+이 패킷에서 가장 중요한 부분은 다음 두 가지이다.
+
+- sender IP = 192.168.11.17
+  - 질문을 보낸 장비가 192.168.11.17이다.
+
+- target MAC = 00:00:00:00:00:00
+  - 아직 192.168.11.7의 MAC 주소를 모르기 때문에 비워둔 상태이다.
+
+- 즉, 이 패킷은  
+**192.168.11.17이 192.168.11.7의 MAC 주소를 알아내기 위해 보낸 ARP 요청 패킷**이다.
+
+---
+
+## ARP Reply
+
+![10](/KH_Security/모의%20해킹/ARP%20Spoofing/img/10.png)
+
+### Wireshark Info
+- 192.168.11.7 is at 00:0c:29:f9:78:42
+
+### 의미
+- 192.168.11.7이 “내 MAC 주소는 00:0c:29:f9:78:42야” 라고 응답하는 패킷이다.
+
+### Ethernet Header 분석
+```
+- dst MAC : 00:0c:29:8e:f5:9c
+- src MAC : 00:0c:29:f9:78:42
+- type : 08 06 → ARP
+
+- 설명
+  - 이번에는 송신 MAC이 `00:0c:29:f9:78:42`이다.
+  - 즉, 192.168.11.7이 응답을 보내고 있다는 뜻이다.
+```
+
+### ARP Header 분석
+```
+- hardware type (2byte) : 00 01 → Ethernet
+- protocol type (2byte) : 08 00 → IPv4
+- hardware length (1byte) : 06 → MAC 주소 길이 6byte
+- protocol length (1byte) : 04 → IP 주소 길이 4byte
+- opcode (2byte) : 00 02 → ARP Reply
+
+- sender MAC address (6byte) : 00:0c:29:f9:78:42
+- sender IP address (4byte) : 192.168.11.7
+
+- target MAC address (6byte) : 00:0c:29:8e:f5:9c
+- target IP address (4byte) : 192.168.11.17
+```
+
+### 핵심 해석
+- 이 패킷은  
+**192.168.11.7이 자신의 MAC 주소(00:0c:29:f9:78:42)를 192.168.11.17에게 알려주는 ARP 응답 패킷**이다.
+
+- 즉, 192.168.11.17은 이 응답을 받고 ARP 테이블에 다음 정보를 저장할 수 있다.  
+192.168.11.7 → 00:0c:29:f9:78:42
+
+---
