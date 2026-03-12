@@ -239,7 +239,7 @@
 
 # 라우팅 과정 개념 설명 (Client -> Router -> Server)
 
-![routing](/Network/imgs/routing.png)
+![routing](/KH_Security/Network/img/routing.png)
 
 ## 개요
 
