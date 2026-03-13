@@ -13,7 +13,7 @@
 apt install -y fake
 ```
 
-![01](/KH_Security/모의%20해킹/ARP%20Spoofing/img/01.png)
+![01](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/01.png)
 
 - 다음과 같이 fake 도구를 설치 해줍니다.
 
@@ -44,7 +44,7 @@ apt install -y fake
 ```bash
 arp -a
 ```
-![02](/KH_Security/모의%20해킹/ARP%20Spoofing/img/02.png)
+![02](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/02.png)
 
 - 위와 같이 정상적으로 IP와 MAC 주소가 매핑되어 있는지 확인해줍니다.
 
@@ -53,7 +53,7 @@ arp -a
 ```
 ip n
 ```
-![03](/KH_Security/모의%20해킹/ARP%20Spoofing/img/03.png)
+![03](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/03.png)
 
 - 위와 같이 정상적으로 IP와 MAC 주소가 매핑되어 있는지 확인해줍니다.
 
@@ -61,7 +61,7 @@ ip n
 
 ## ARP Spoofing 공격
 
-![04](/KH_Security/모의%20해킹/ARP%20Spoofing/img/04.png)
+![04](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/04.png)
 
 - 다음과 같은 명령어를 통해 ARP Spoofing 공격을 시도합니다.
 ```
@@ -79,14 +79,14 @@ send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 
 ### Windows
 
-![05](/KH_Security/모의%20해킹/ARP%20Spoofing/img/05.png)
+![05](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/05.png)
 
 -  두 IP 주소가 동일한 MAC 주소로 변경된 것을 확인할 수 있는데,  
 이는 ARP Spoofing 공격으로 인해 ARP 테이블이 조작된 상태입니다.
 
 ### Linux
 
-![06](/KH_Security/모의%20해킹/ARP%20Spoofing/img/06.png)
+![06](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/06.png)
 
 - Linux도 마찬가지로 두 IP 주소가 동일한 MAC 주소로 변경된 것을 확인할 수 있는데,  
 이는 ARP Spoofing 공격으로 인해 ARP 테이블이 조작된 상태입니다.
@@ -99,7 +99,7 @@ send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 
 ## ARP Request
 
-![07](/KH_Security/모의%20해킹/ARP%20Spoofing/img/07.png)
+![07](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/07.png)
 
 ### Wireshark Info
 - Who has 192.168.11.17? Tell 192.168.11.7
@@ -153,7 +153,7 @@ send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 
 ## ARP Reply
 
-![08](/KH_Security/모의%20해킹/ARP%20Spoofing/img/08.png)
+![08](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/08.png)
 
 ### Wireshark Info
 - 192.168.11.17 is at 00:0c:29:a4:4a:38
@@ -201,7 +201,7 @@ send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 
 ### ARP Request
 
-![09](/KH_Security/모의%20해킹/ARP%20Spoofing/img/09.png)
+![09](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/09.png)
 
 ### Wireshark Info
 - Who has 192.168.11.7? Tell 192.168.11.17
@@ -258,7 +258,7 @@ send_arp 192.168.11.7 00:0c:29:8e:f5:9c 192.168.11.17 00:0c:29:a4:4a:38
 
 ## ARP Reply
 
-![10](/KH_Security/모의%20해킹/ARP%20Spoofing/img/10.png)
+![10](/KH_Security/모의%20해킹/Spoofing/ARP%20스푸핑/img/10.png)
 
 ### Wireshark Info
 - 192.168.11.7 is at 00:0c:29:f9:78:42
