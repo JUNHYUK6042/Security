@@ -1,0 +1,127 @@
+# PHP를 이용한 DB 접속 
+
+---
+
+## DB 연동 프로그램 구조
+
+![01]()
+
+### step 1.DB 접속
+```php
+  $conn=oci_connect()
+  $conn=mysql_connect()
+```
+
+### step 2.SQL문 생성
+
+- 사용하고자 하는 SQL 문을 생성합니다.
+```sql
+  SELECT sno,sname,sex,syear,major,to_char(avr,'0.00') avr 
+  FROM student
+  ORDER BY sno;
+```
+
+### step 3.SQL 구문 파싱과 실행
+
+- RDBMS가 SQL문장을 실행하기 위해서는 SQL문장을 어떻게 실행할지 판단할 파싱과정을 거치며,  
+이 과정을 통해 최적의 실행 방법을 찾아냅니다.
+
+#### 예시
+```sql
+  SELECT * FROM student
+  WHERE sname = '장비';
+```
+
+- sname 컬럼에 인덱스가 있을 시
+  - 인덱스를 통해 sname이 장비인 행만을 읽는 것이 효과적임
+ 
+### step 4.결과 패치
+
+- SELECT문 이라면 SQL문을 실행한 이후 검색된 결과가 리소스 형태로 변수에 전달됩니다.
+- 리소스 변수는 직접 화면에 출력이 불가능하므로,    
+출력하기 위해 리소스 형태의 정보를 변수로 옮기는 과정을 `패치 과정`이라고 합니다.
+
+### step 5.접속 종료
+
+- 프로그램이 모두 실행되고 접속을 종료하며 프로그램을 끝내는 과정입니다.
+
+---
+
+## 오라클 접속 환경과 PHP 접속하기
+
+### Oracle 접속 정보
+
+| 항목 | 값 |
+|---|---|
+| IP | 192.168.10.11 |
+| Port | 1521 |
+| SID | DB19 |
+| TNS 명 | oracle |
+| 계정/비밀번호 | st04 / st04 |
+
+---
+
+### oci_connect() 함수
+
+```sql
+  $conn=oci_connect( $user_name, $password, $connection_string, $charset, $session_mode);
+```
+
+- 설명
+
+| 변수 | 설명 |
+|---|---|
+| $username | 접속 계정 |
+| $password | 비밀번호 |
+| $connection_string | 오라클 네트워크 식별자 |
+| $character_set | 문자 인코딩 |
+| $session_mode | 접속 권한 설정 |
+
+---
+
+### TNS 별칭 이용한 접속
+```php
+  <?
+  $server = "oracle";
+  $user_name = "st04";
+  $password = "st04";
+  
+  $conn = @oci_connect($user_name, $password, $server) or die('Could not connect:');
+  
+  echo("Oracle 19c ₩$conn : $conn<br>");
+  
+  $st = oci_server_version($conn);
+  echo("$st<br>");
+  ?>
+```
+
+#### 결과
+
+![02]()
+
+---
+
+### TNS 별칭없이 접속
+```php
+  <?
+  $server = "(DESCRIPTION =
+               (ADDRESS = (PROTOCOL = tcp)(HOST = 192.168.10.35)(port = 1521))
+               (CONNECT_DATA = (SID = DB19))
+             )";
+  $user_name = "st04";
+  $password = "st04";
+  
+  $conn = @oci_connect($user_name, $password, $server) or die('Could not connect:');
+  
+  echo("Oracle 19c ₩$conn : $conn<br>");
+  
+  $st = oci_server_version($conn);
+  echo("$st<br>");
+  ?>
+```
+
+#### 결과
+
+![02]()
+
+- TNS 별칭을 이용한 접속과 별칭없이 접속한 결과가 똑같다는 것을 알 수 있습니다.
