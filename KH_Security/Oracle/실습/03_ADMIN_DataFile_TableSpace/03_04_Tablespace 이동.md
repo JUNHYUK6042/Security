@@ -58,21 +58,21 @@
   ORDER BY 1; 
 ```
 
-![29]()
+![29](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/29.png)
 
 - 다음 명령어로 Datafile를 조회합니다.
 ```sql
   SELECT tablespace_name, bytes, file_name FROM dba_data_files;
 ```
 
-![30]()
+![30](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/30.png)
 
 - Offline된 Users Tablespace은 Data File의 크기가 표시되지 않습니다.
 > System이나 Undo용 Tablespace는 Offline이 되지 않습니다.
 
 ---
 
-![31]()
+![31](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/31.png)
 
 - Offline된 Users Tablespace은 Data File의 크기가 0으로 표시됩니다.
 
@@ -95,7 +95,7 @@
   !ls /app/ora19c/oradata/disk3/
 ```
 
-![32]()
+![32](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/32.png)
 
 - 확인한 결과 DB19 디렉터리에 있는 users01.dbf 파일을 disk3 디렉터리로 이동하였습니다.
 
@@ -108,7 +108,7 @@
   FROM dba_data_files;
 ```
 
-![33]()
+![33](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/33.png)
 
 - 확인한 결과로 Data file은 이동을 했지만, directory 정보는 수정되지 않습니다.
 
@@ -127,7 +127,7 @@
   '/app/ora19c/oradata/DB19/users01.dbf' TO '/app/ora19c/oradata/disk3/users01.dbf';
 ```
 
-![34]()
+![34](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/34.png)
 
 - data file을 확인한 결과 users01.dbf 파일이 disk3 디렉터리로 이동하였습니다.
 
@@ -140,7 +140,7 @@
   ALTER TABLESPACE users ONLINE;
 ```
 
-![35]()
+![35](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/35.png)
 
 - Datafile 경로 변경이 정상 적용되고 Tablespace가 정상 동작 상태로 복구되었습니다.
 - Users Tablespace은 Data File의 크기가 다시 표시됩니다.
@@ -200,7 +200,7 @@
 
 - Mount 단계는 Control File까지만 읽습니다. (Data File과 Redo Log File의 위치, 정보에 대한 내용이 있습니다.)
 
-![36]()
+![36](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/36.png)
 
 - Mount 단계에서는 Data File을 읽지 못하기 때문에 파일 이동이 가능합니다.
 
@@ -213,7 +213,7 @@
   SELECT t.name tablespace_name, d.bytes, d.name file_name
 ```
 
-![37]()
+![37](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/37.png)
 
 - MOUNT 상태에서 Datafile 정보를 조회한 결과 일부 파일은 기존 경로를 유지하고 있어  
   OS에서 이동된 경로와 불일치 상태이며, 이로 인해 Database OPEN 전에 반드시 Datafile 경로를 수정해야 합니다.
@@ -237,7 +237,7 @@
 
 - 경로 수정 후 Data File의 정보를 조회합니다
 
-![38]()
+![38](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/38.png)
 
 ---
 
@@ -247,12 +247,12 @@
   SELECT name FROM v$controlfile;
 ```
 
-![40]()
+![40](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/40.png)
 
 ```sql
   SELECT member FROM v$logfile;
 ```
 
-![41]()
+![41](/KH_Security/Oracle/imgs/04_Tablespace%26Data%20File/41.png)
 
 - DB19 디렉터리에 있는 모든 파일들이 disk* 디렉리로 이동하였으므로 DB를 OPEN 상태로 변경합니다.
