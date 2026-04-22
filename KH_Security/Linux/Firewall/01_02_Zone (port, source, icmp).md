@@ -39,7 +39,7 @@ fire-cmd reload
 firewall-cmd --list-all
 ```
 
-![13]()
+![13](/KH_Security/Linux/Firewall/img/13.png)
 
 - 현재 active zone은 public이며 ens160 인터페이스에 적용된 상태입니다.
 - services 항목에 cockpit, dhcpv6-client, ssh가 허용된 상태입니다.
@@ -78,10 +78,10 @@ firewall-cmd --list-all
 
 ---
 
-### 실습
+### ICMP Type 차단
 
 - 다음 명령어로 public zone에 ICMP 타입 중 echo-request(ping 요청)를 차단합니다.
-````
+```
 firewall-cmd --permanent --zone=public --add-icmp-block=echo-request
 ```
 
@@ -90,4 +90,38 @@ firewall-cmd --permanent --zone=public --add-icmp-block=echo-request
 firewall-cmd --reload
 ```
 
-- 다음 명령어로 icmp 차단한 것을 확인합니다.
+---
+
+### 차단된 ICMP 확인
+
+- 다음 명령어로 차단된 타입을 확인합니다.
+```
+firewall-cmd --list-icmp-blocks
+```
+
+![14](/KH_Security/Linux/Firewall/img/14.png)
+
+- 출력값이 없으면 ICMP 차단이 설정되지 않은 상태입니다.
+- 즉, 현재는 ping 요청이 허용된 상태입니다.
+
+---
+
+### default zone의 설정 내용을 출력
+
+![15](/KH_Security/Linux/Firewall/img/15.png)
+
+- 현재 active zone은 public이며 ens160 인터페이스에 적용된 상태입니다.
+- SSH, cockpit, dhcpv6-client 서비스가 허용된 상태입니다.
+- 80/tcp 포트가 열려 있어 웹 접근이 가능한 상태입니다.
+- echo-request(ICMP)가 차단되어 ping 요청이 차단된 상태입니다.
+- 포트 포워딩 및 masquerade는 사용하지 않는 상태입니다.
+
+---
+
+## 요약 정리
+
+- firewalld는 필요한 포트와 IP를 zone에 직접 추가하여 접근을 제어합니다.
+- `--permanent`는 설정 파일에 저장만 하며, `--reload`를 실행해야 실제 방화벽에 적용됩니다.
+- `--list-all` 명령어로 현재 허용된 서비스와 포트를 확인할 수 있습니다.
+- ICMP는 type 단위로 차단하며, `echo-request`를 차단하면 ping 요청이 차단됩니다.
+- ICMP 차단 여부는 `--list-icmp-blocks`로 확인할 수 있습니다.
