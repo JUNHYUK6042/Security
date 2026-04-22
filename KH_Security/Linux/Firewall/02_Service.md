@@ -50,7 +50,7 @@
 firewall-cmd --list-services
 ```
 
-![16]()
+![16](/KH_Security/Linux/Firewall/img/16.png)
 
 - 출력 결과가 `ssh`이므로 현재 SSH 서비스만 허용된 상태입니다.
 
@@ -63,7 +63,7 @@ firewall-cmd --list-services
 firewall-cmd --get-services
 ```
 
-![17]()
+![17](/KH_Security/Linux/Firewall/img/17.png)
 
 - 출력된 값들은 사용 가능한 모든 서비스이며, 실제로 적용된 서비스는 아닙니다.
 
@@ -73,7 +73,7 @@ firewall-cmd --get-services
 
 ### 특정 Zone Service 확인
 
-![18]()
+![18](/KH_Security/Linux/Firewall/img/18.png)
 
 - 현재 서비스가 `cockpit`, dhcpv6-client`, `ssh`가 있는 것을 확인할 수 있습니다.
 
@@ -104,7 +104,7 @@ firewall-cmd --permanent --zone=public --add-service http
 firewall-cmd --list-services --zone=public
 ```
 
-![19]()
+![19](/KH_Security/Linux/Firewall/img/19.png)
 
 - 출력 결과를 통해 현재 public zone에는 http와 ssh 서비스가 허용된 상태임을 확인할 수 있습니다.
 
@@ -117,11 +117,117 @@ firewall-cmd --list-services --zone=public
 firewall-cmd --list-all
 ```
 
-![20]()
+![20](/KH_Security/Linux/Firewall/img/20.png)
 
-- 출력 결과를 통해 public zone에서 http와 ssh 서비스가 허용되어 있고, 80/tcp 포트가 추가된 상태임을 확인할 수 있습니다.
+- 출력 결과를 통해 public zone에서 http와 ssh 서비스가 허용되어 있고,  
+  80/tcp 포트가 추가된 상태임을 확인할 수 있습니다.
 - 또한 echo-request(ICMP)가 차단되어 ping 요청이 차단된 상태입니다.
 
 ---
 
-x
+## Service 생성 (oracle)
+
+- 다음 명령어를 통해 Oracle Service를 생성 후 설정 파일을 확인합니다.
+```
+firewall-cmd --permanent --new-service=oracle // oracle 서비스를 새로 생성합니다.
+
+firewall-cmd --permanent --service=oracle --set-short=oracle //oracle 서비스의 이름(short)을 설정합니다.
+
+firewall-cmd --permanent --service=oracle --add-port=1521-1523/tcp //oracle 서비스에 사용할 포트(1521~1523/tcp)를 추가합니다.
+```
+
+### 설정 파일 확인
+
+- 다음 명령어로 서비스 설정 파일을 확인합니다.
+```
+cat /etc/firewalld/services/oracle.xml
+```
+
+![21](/KH_Security/Linux/Firewall/img/21.png)
+
+- 해당 설정은 oracle 서비스에 1521~1523 TCP 포트를 사용하는 서비스 정의를 생성한 것입니다.
+- 즉, oracle 서비스를 추가하면 해당 포트 범위가 자동으로 허용됩니다.
+
+---
+
+### Service 적용 (oracle)
+
+- 다음 명령어로 public zone에 oracle 서비스를 추가 및 적용합니다.
+```
+firewall-cmd --permanent --zone=public --add-service=oracle
+
+firewall-cmd --reload //변경된 설정을 실제 방화벽에 적용합니다.
+```
+
+- 다음 명령어로 public zone에 적용된 서비스를 확인합니다.
+```
+firewall-cmd --list-services --zone=public
+```
+
+![22](/KH_Security/Linux/Firewall/img/22.png)
+
+- 출력 결과를 통해 http, oracle, ssh 서비스가 허용된 상태임을 확인할 수 있습니다.
+
+---
+
+### 사용자 정의 Service 제거 및 삭제 (oracle)
+
+- 다음 명령어로 public zone에서 oracle 서비스를 제거 후 실제 방화벽에 적용합니다.
+```
+firewall-cmd --permanent --zone=public --remove-service=oracle
+
+firewall-cmd --reload
+```
+
+- 다음 명령어로 public zone에 적용된 서비스를 확인합니다.
+```
+firewall-cmd --list-services --zone=public
+```
+
+![23](/KH_Security/Linux/Firewall/img/23.png)
+
+- 출력 결과를 통해 oracle 서비스가 제거되고 http, ssh만 허용된 상태임을 확인할 수 있습니다.
+
+---
+
+### 사용자 정의 Service 완전 삭제
+
+- 다음 명령어로 생성했던 oracle 서비스를 시스템에서 완전히 삭제합니다.
+```
+firewall-cmd --permanent --delete-service oracle
+```
+
+- 다음 명령어로 서비스 XML 파일 삭제 여부를 확인합니다.
+```
+ls /etc/firewalld/services/oracle.xml
+```
+
+![24](/KH_Security/Linux/Firewall/img/24.png)
+
+- 출력 결과에서 파일이 존재하지 않으면 정상적으로 삭제된 상태입니다.
+
+---
+
+### built-in Service 삭제 불가 확인
+
+- 다음 명령어로 기본 제공 서비스(ftp)를 삭제 시도합니다.
+```
+firewall-cmd --permanent --delete-service ftp
+```
+
+![25](/KH_Security/Linux/Firewall/img/25.png)
+
+- built-in service는 시스템 기본 서비스이므로 삭제가 불가능하며 에러가 발생합니다.
+
+---
+
+## 요약 정리
+
+- service는 포트와 프로토콜을 묶은 방화벽 설정 단위입니다.
+- `--add-service / --remove-service`로 zone에 서비스 추가 및 제거가 가능합니다.
+- `--permanent` 옵션은 설정 저장이며, `--reload`를 해야 실제 적용됩니다.
+- `--get-services`는 전체 목록, `--list-services`는 현재 적용 상태를 확인합니다.
+- 사용자 정의 서비스는 생성(`--new-service`) 후 포트 설정하여 사용할 수 있습니다.
+- service는 zone에 추가해야 실제 트래픽이 허용됩니다.
+- `remove-service`는 zone에서 제거, `delete-service`는 서비스 자체 삭제입니다.
+- built-in 서비스는 삭제가 불가능합니다.
