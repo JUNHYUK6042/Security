@@ -46,7 +46,7 @@
     - **Virtual Circuit(VC):** 출발지부터 목적지까지 미리 경로를 확립하고 식별자(ID)를 이용해 전달합니다. (연결지향형)
 
 
-## St석
+## Statistical multiplexing
 
 ![statistical multiplexing](/KH_Security/Network/img/01.png)
 
