@@ -31,10 +31,10 @@ OSPF(Open Shortest Path First)는 링크 상태(Link-State) 기반의 IGP(Interi
 - `ABR` : Area를 연결하는 라우터
 - `ASBR` : AS와 연결하는 외부 연결 라우터
 - `DR(Designated Router)`
-  - Link stat 정보를 취합, 관리하는 라우터
-  - IR과 DR간에 link stat 정보를 주고 받는다.
-- BDR(Backup DR)
+  - Link state 정보를 취합, 관리하는 라우터
+  - IR과 DR간에 link state 정보를 주고 받는다.
 
+- BDR(Backup DR)
 - OSPF는 neighbor 간에 라우팅 정보를 공유한다.
   - 라우터 간에 인접관계가 있어야만 한다.
   - 동일한 area에 위치한다.
@@ -49,15 +49,15 @@ OSPF(Open Shortest Path First)는 링크 상태(Link-State) 기반의 IGP(Interi
 
 ![Neighbor.Adjacency](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/Neighbor_Adjacency.png.jpg)
 
-### Point to Poing Link  
+### Point to Point Link  
+
 - HDLC, PPP등의 Serial Link
-- DB/BDR를 선출 하지 않는다.
+- DR/BDR를 선출 하지 않는다.
 - OSPF Hello 및 LSU 패킷은 Multicast 224.0.0.5를 이용한다.
   - Hello Packet : 10s
   - Dead Interval : 40s
  
 ---
-
 ## OSPF - Multiaccess Network
 
 - Ethernet등의 LAN Link
@@ -73,7 +73,7 @@ OSPF(Open Shortest Path First)는 링크 상태(Link-State) 기반의 IGP(Interi
 
 ## OSPF - Metric
 
-- 각 프로토콜 metric
+- 각 프로토콜 metric    
 | Protocol | Metric 기준 |
 | --- | --- |
 | RIP | Hop Count |
@@ -109,35 +109,34 @@ OSPF(Open Shortest Path First)는 링크 상태(Link-State) 기반의 IGP(Interi
 ![02](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/02.png)
 
 - R1에 연결된 Serial 라인에 대한 인터페이스 설정을 합니다.
+
 - 인터페이스 상태를 확인합니다.
 
-![03](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/03.png)
+![03](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/03.png)  
 ![04](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/04.png)
 
 #### R2 세팅 & 인터페이스 상태 확인
 
-![05](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/05.png)
+![05](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/05.png)  
 ![06](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/06.png)
 
 #### R3 세팅 & 인터페이스 상태 확인
 
-![07](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/07.png)
+![07](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/07.png)  
 ![08](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/08.png)
 
 ---
 
 ## 각 PC들의 IP & Gateway & NetMask 설정
 
-- PC1
-
+- PC1  
 ![09](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/09.png)
 
-- PC2
 
+- PC2  
 ![10](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/10.png)
 
-- PC3
-
+- PC3  
 ![11](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/11.png)
 
 - 각각 PC의 네트워크를 설정해 줍니다.
@@ -148,60 +147,46 @@ OSPF(Open Shortest Path First)는 링크 상태(Link-State) 기반의 IGP(Interi
 
 ### R1
 
-- `router ospf 1` 명령어를 통해 인터페이스 설정합니다.
-
+- `router ospf 1` 명령어를 통해 인터페이스 설정합니다.  
 ![12](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/12.png)
-
-- `show ip route ospf`
-
+ 
+- `show ip route ospf`  
 ![13](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/13.png)
 
-- `show ip ospf int s0/0/0`
-
+- `show ip ospf int s0/0/0`  
 ![14](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/14.png)
 
-- `show ip ip ospf neighbor`
-
+- `show ip ospf neighbor`  
 ![15](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/15.png)
 
 ---
 
 ### R2
 
-- `router ospf 1` 명령어를 통해 인터페이스 설정합니다.
-
+- `router ospf 1` 명령어를 통해 인터페이스 설정합니다.  
 ![16](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/13.png)
 
-- `show ip route ospf`
-
+- `show ip route ospf`  
 ![17](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/19.png)
 
-- `show ip ospf int s0/0/0`
-
+- `show ip ospf int s0/0/0`  
 ![18](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/20.png)
 
-- `show ip ip ospf neighbor`
-
+- `show ip ospf neighbor`  
 ![19](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/21.png)
 
 ---
 
 ### R3 
 
-- `router ospf 1` 명령어를 통해 인터페이스 설정합니다.
-
+- `router ospf 1` 명령어를 통해 인터페이스 설정합니다.  
 ![20](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/14.png)
 
-- `show ip route ospf`
-
+- `show ip route ospf`  
 ![21](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/22.png)
 
-- `show ip ospf int s0/0/0`
-
+- `show ip ospf int s0/0/0`  
 ![22](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/23.png)
 
-- `show ip ospf neighbor`
-
+- `show ip ospf neighbor`  
 ![23](/KH_Security/Cisco%20Packet%20Tracer/img/Router%20OSPF/24.png)
-
----
